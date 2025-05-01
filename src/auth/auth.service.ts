@@ -45,9 +45,9 @@ export class AuthService {
     //gets the active redis connection(client) from the custom RedisService
     //way to interact with the redis using ioredis
 
-    const tokenCount = await client.scard(redisKey);    
+    const tokenCount = await client.scard(redisKey);
     if (tokenCount >= 5) {
-      throw new UnauthorizedException('Cannot login on more than 5 devicess');
+      throw new UnauthorizedException('Cannot login on more than 5 devices');
     }
     await client.sadd(redisKey, token);
     //store the jwt token in the redis under the key auth:user:{user.id}

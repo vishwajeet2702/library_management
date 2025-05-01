@@ -11,6 +11,7 @@ import { Order } from './order.model';
 import { BorrowBookDto } from './dto/borrow_book.dto';
 import { ReturnBookDto } from './dto/return_book.dto';
 import { CreateUserDto } from './dto/create.user.dto';
+import { sendLowStockAlert } from '../grpc/notification.client';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
@@ -44,6 +45,10 @@ export class UserService {
     }
     book.quantity -= quantity;
     await book.save();
+
+    if (book.quantity === 0) {
+      sendLowStockAlert(bookId, book.name);
+    }
 
     const order = await this.orderModel.create({
       userId,
